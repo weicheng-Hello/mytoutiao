@@ -15,11 +15,19 @@
         <div class="left" @click="addImage">图片</div>
         <div class="right">发布</div>
     </div>
-    <div class="changeImg">
+    
+</div>
+<div class="changeImg">
+        <div class="changeInput">
+            <input type="file" multiple="multiple" accept="image/*">
+        </div>
+            <div class="changImg-list">+</div>
         <div class="changImg-list"></div>
+
+        <div class="changImg-list"></div>
+
             <img :src="url" alt="">
     </div>
-</div>
 </template>
 
 <script>
@@ -36,7 +44,8 @@ return {
         {id:"toutiao",text:"发微头条"},
         {id:"文章",text:"写文章"}
     ],
-    tabId:""
+    tabId:"",
+    url:""
 };
 },
 //监听属性 类似于data概念
@@ -123,13 +132,28 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     }
   }
   .changeImg {
-      width: 300px;
+      width: 340px;
       border: 1px solid black;
       padding: 10px;
+      display: flex;
+      position: relative;
+      .changeInput{
+          position: absolute;
+          top: 50px;
+          width: 100px;
+          height: 100px;
+          opacity: 0;
+      }
   .changImg-list {
       width: 100px;
       height: 100px;
       border:1px dashed #ddd;
+      font-size: 50px;
+      text-align: center;
+      line-height: 100px;
+      color: #ddd;
+      margin: 5px;
+      
   }
 
   img {
