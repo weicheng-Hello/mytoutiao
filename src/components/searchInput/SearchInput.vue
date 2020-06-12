@@ -1,0 +1,78 @@
+<!--  -->
+<template>
+<div class='search-input'>
+    <div class="left">
+        <input type="text" placeholder="搜索站内咨询，视频或用户">
+    </div>
+    <div class="right">搜索</div>
+</div>
+</template>
+
+<script>
+//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+//例如：import 《组件名称》 from '《组件路径》';
+
+export default {
+//import引入的组件需要注入到对象中才能使用
+components: {},
+data() {
+//这里存放数据
+return {
+
+};
+},
+//监听属性 类似于data概念
+computed: {},
+//监控data中的数据变化
+watch: {},
+//方法集合
+methods: {
+
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+
+},
+//生命周期 - 挂载完成（可以访问DOM元素）
+mounted() {
+
+},
+beforeCreate() {}, //生命周期 - 创建之前
+beforeMount() {}, //生命周期 - 挂载之前
+beforeUpdate() {}, //生命周期 - 更新之前
+updated() {}, //生命周期 - 更新之后
+beforeDestroy() {}, //生命周期 - 销毁之前
+destroyed() {}, //生命周期 - 销毁完成
+activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+}
+</script>
+<style lang="less" scoped>
+    .search-input {
+        width: 100%;
+        display: flex;
+  .left {
+      flex: 8;
+    input {
+        width:100%;
+        height: 40px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        border-right:none ;
+        border: 1px solid #ddd;
+        padding-left: 10px;
+    }
+  }
+
+  .right {
+      flex: 2;
+      width: 50px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      color: white;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
+      background-color: #2990d7;
+  }
+}
+</style>
