@@ -1,5 +1,6 @@
 <!--  -->
 <template>
+<div>
 <div class='post'>
     <div class="top">
         <div :class="['top-title',{'active':item.id==tabId}]" 
@@ -17,17 +18,18 @@
     </div>
     
 </div>
-<div class="changeImg">
+    <div class="changeImg" v-show="picture">
         <div class="changeInput">
-            <input type="file" multiple="multiple" accept="image/*">
+            <input type="file" multiple="multiple" accept="image/*" @change="changePictuer">
         </div>
-            <div class="changImg-list">+</div>
-        <div class="changImg-list"></div>
-
-        <div class="changImg-list"></div>
-
-            <img :src="url" alt="">
+        <div class="changImg-list">+</div>
+        <div class="close" @click="closeImg" >x</div>
+        <div class="img-item" v-for="(img,index) in uploadImgs" :key="img">
+            <img :src="img" alt="" >
+            <div class="del" @click="delImg(index)">x</div>
+        </div>
     </div>
+   </div> 
 </template>
 
 <script>
@@ -42,10 +44,12 @@ data() {
 return {
     titles:[
         {id:"toutiao",text:"发微头条"},
-        {id:"文章",text:"写文章"}
+        {id:"wenzhang",text:"写文章"}
     ],
-    tabId:"",
-    url:""
+    tabId:"toutiao",
+    url:"",
+    picture:false,
+    uploadImgs:[]
 };
 },
 //监听属性 类似于data概念
@@ -58,7 +62,25 @@ methods: {
         this.tabId=id
     },
     addImage:function(){
-        
+        this.picture = true
+    },
+    closeImg:function(){
+        this.picture = false
+    },
+    changePictuer:function(e){
+        console.log(e)
+        Array.from(e.target.files).forEach(f => {
+            console.log(f)
+            let params = new FormData();
+            params.append("file",f)
+            this.$axios.post("/aliossUpload",params).then(res => {
+                // console.log(res.data.url)
+                this.uploadImgs.push(res.url)
+            })
+        })
+    },
+    delImg:function(index){
+        this.uploadImgs.splice(index,1)
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -118,6 +140,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
       align-items: center;
     .left {
         padding-left: 30px;
+        cursor: pointer;
     }
 
     .right {
@@ -131,12 +154,15 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         opacity: 0.5;
     }
   }
-  .changeImg {
+ 
+}
+ .changeImg {
       width: 340px;
-      border: 1px solid black;
-      padding: 10px;
+      border: 1px solid #ddd;
+      padding-top: 2m0px;
       display: flex;
       position: relative;
+      flex-wrap: wrap;
       .changeInput{
           position: absolute;
           top: 50px;
@@ -155,10 +181,39 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
       margin: 5px;
       
   }
-
-  img {
-
+  .close{
+      position: absolute;
+      top: -8px;
+      right:2px;
+      cursor: pointer;
   }
+    .img-item{
+            position: relative;
+            margin: 5px;
+            width: 100px;
+            height: 100px;
+        img {
+            
+            width: 100px;
+            height: 100px;
+        }
+        .del{
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            }
+            
 }
+    .img-item:hover {
+                background-color: #7f7f7f;
+                opacity: 0.8;
+                transition: all 0.5s;
+                .del {
+                  color: white;
+                  display: block;
+                }
+              }
 }
 </style>
