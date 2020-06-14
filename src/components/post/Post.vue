@@ -10,8 +10,16 @@
         >{{item.text}}</div>
     </div>
     <div class="middle">
-        <textarea  cols="30" rows="10" placeholder="有什么事新鲜事告诉大家"></textarea>
+        <textarea  cols="30" rows="10" placeholder="有什么事新鲜事告诉大家" v-show="tabId=='toutiao'"></textarea>
+        <div class="write">
+            <div v-show="tabId=='wenzhang'">
+                <input type="text" placeholder="请输标题">
+                <vue-editor v-model="richContent" class="rich-editor" aria-placeholder="请输入正文..."/>
+                <!-- <div class="rich-publish">发布</div> -->
+            </div>
+        </div>
     </div>
+
     <div class="bottom">
         <div class="left" @click="addImage">图片</div>
         <div class="right">发布</div>
@@ -35,10 +43,13 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import { VueEditor } from "vue2-editor";
 export default {
 //import引入的组件需要注入到对象中才能使用
-components: {},
+
+components: {
+    VueEditor
+},
 data() {
 //这里存放数据
 return {
@@ -49,7 +60,8 @@ return {
     tabId:"toutiao",
     url:"",
     picture:false,
-    uploadImgs:[]
+    uploadImgs:[],
+    richContent: "",//富文本编辑的内容
 };
 },
 //监听属性 类似于data概念
@@ -60,6 +72,7 @@ watch: {},
 methods: {
     tabClick:function(id){
         this.tabId=id
+        console.log(2)
     },
     addImage:function(){
         this.picture = true
@@ -112,6 +125,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
       height: 40px;
       text-align: center;
       line-height: 40px;
+      border-bottom: 1px solid #ddd;
     //   margin-left: 15px;
       .top-title{
           margin-left:15px;
@@ -131,6 +145,25 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         padding: 20px;
         outline: medium;
     }
+    .write {
+        width: 100%;
+    input {
+        width: 100%;
+        height: 40px;
+        border: none;
+        outline: medium;
+        font-size: 22px;
+        padding: 10px;
+    }
+
+    .rich-editor {
+        border: none;
+      undefined {
+
+      }
+    }
+  
+}
   }
 
   .bottom {
