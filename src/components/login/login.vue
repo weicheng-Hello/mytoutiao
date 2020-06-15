@@ -2,7 +2,7 @@
 <template>
 <div class='login'>
         <p class="login-message">登录后可以保存您的浏览喜好、评论、收藏，并与APP同步，更可以发布微头条</p>
-        <div class='login-btn'>登录</div>
+        <div class='login-btn' @click.stop="userLogin">登录</div>
 </div>
 </template>
 
@@ -25,7 +25,11 @@ computed: {},
 watch: {},
 //方法集合
 methods: {
-
+    userLogin:function(){
+        this.$router.push({
+            name:"userLogin"
+        })
+    }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -33,7 +37,7 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
