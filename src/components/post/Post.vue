@@ -9,21 +9,15 @@
         @click.stop="tabClick(item.id)"
         >{{item.text}}</div>
     </div>
-    <div class="middle">
-        <textarea  cols="30" rows="10" placeholder="有什么事新鲜事告诉大家" v-show="tabId=='toutiao'"></textarea>
-        <div class="write">
-            <div v-show="tabId=='wenzhang'">
-                <input type="text" placeholder="请输标题">
-                <vue-editor v-model="richContent" class="rich-editor" aria-placeholder="请输入正文..."/>
-                <!-- <div class="rich-publish">发布</div> -->
-            </div>
+    <div class="middle" v-show="tabId=='toutiao'">
+        <textarea v-model="content" cols="30" rows="10" placeholder="有什么事新鲜事告诉大家" ></textarea>
+        <div class="bottom">
+            <div class="left" @click="addImage">图片</div>
+            <div class="right" @click.stop="releaseClick">发布</div>
         </div>
+        
     </div>
 
-    <div class="bottom">
-        <div class="left" @click="addImage">图片</div>
-        <div class="right">发布</div>
-    </div>
     
 </div>
     <div class="changeImg" v-show="picture">
@@ -37,6 +31,13 @@
             <div class="del" @click="delImg(index)">x</div>
         </div>
     </div>
+    <div class="write" v-show="tabId=='wenzhang'">
+            
+                <input type="text" placeholder="请输标题..." v-model="titleWz">
+                <vue-editor v-model="richContent" class="rich-editor" aria-placeholder="请输入正文..."/>
+                <div class="rich-publish" @click="richPublish">发布</div>
+            
+        </div>
    </div> 
 </template>
 
@@ -53,6 +54,7 @@ components: {
 data() {
 //这里存放数据
 return {
+    content:"",//文本内容
     titles:[
         {id:"toutiao",text:"发微头条"},
         {id:"wenzhang",text:"写文章"}
@@ -62,6 +64,7 @@ return {
     picture:false,
     uploadImgs:[],
     richContent: "",//富文本编辑的内容
+    titleWz:""//写文章标题监听
 };
 },
 //监听属性 类似于data概念
@@ -80,6 +83,7 @@ methods: {
     closeImg:function(){
         this.picture = false
     },
+    //上传图片 使用input的的fiel的change事件
     changePictuer:function(e){
         console.log(e)
         Array.from(e.target.files).forEach(f => {
@@ -92,9 +96,47 @@ methods: {
             })
         })
     },
+    //删除图片
     delImg:function(index){
         this.uploadImgs.splice(index,1)
+    },
+    //发头条
+    releaseClick:function(){
+        if(!this.content){
+            this.$message({
+                msg:"微头条内容不能为空"
+            })
+            return false
+        }
+        this.$axios.post("/createTT",{
+            content:this.content,
+            imgs:this.uploadImgs.join(","),
+        }).then(res => {
+            this.$message ({
+                msg:res.msg
+            })
+        })
+    },
+    //写文章的方法
+    richPublish:function(){
+        if(!this.titleWz || !this.richPublish){
+            this.$message({
+                msg:"标题或者内容不能为空"
+            })
+            return false
+        }
+        this.$axios.post("/createArticle",{
+            content:this.richContent,
+            title:this.titleWz,
+            img:""
+        }).then(res => {
+           this.$message({
+               msg:res.msg
+           })
+        })
     }
+
+            
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -138,35 +180,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
   }
 
   .middle {
-    textarea {
-        width: 100%;
-        border: 1px solid #ddd;
-        background-color: #ddd;
-        padding: 20px;
-        outline: medium;
-    }
-    .write {
-        width: 100%;
-    input {
-        width: 100%;
-        height: 40px;
-        border: none;
-        outline: medium;
-        font-size: 22px;
-        padding: 10px;
-    }
-
-    .rich-editor {
-        border: none;
-      undefined {
-
-      }
-    }
-  
-}
-  }
-
-  .bottom {
+      .bottom {
       height: 40px;
       display: flex;
       justify-content: space-between;
@@ -187,6 +201,17 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         opacity: 0.5;
     }
   }
+    textarea {
+        width: 100%;
+        border: 1px solid #ddd;
+        background-color: #ddd;
+        padding: 20px;
+        outline: medium;
+    }
+    
+  }
+
+  
  
 }
  .changeImg {
@@ -248,5 +273,36 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
                   display: block;
                 }
               }
+    
+}
+.write {
+    position: relative;
+        width: 100%;
+        border: 1px solid #ddd;
+    input {
+        width: 100%;
+        height: 40px;
+        border: none;
+        outline: medium;
+        font-size: 22px;
+        padding: 10px;
+    }
+
+    .rich-editor {
+        border: none;
+      
+    }
+    .rich-publish{
+        width: 100px;
+        height: 40px;
+        background-color: var(--themeColor);
+        text-align: center;
+        line-height: 40px;
+        color: white;
+        // position: absolute;
+        margin-left: calc(100% - 100px);
+       
+    }
+  
 }
 </style>

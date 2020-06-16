@@ -2,7 +2,7 @@
 import Vue from "vue"
 //引入Vuex
 import Vuex from "vuex"
-import {UPDATE_USER_INFO} from "./mutationsType"
+import { UPDATE_USER_INFO } from "./mutationsType"
 //在vue中使用vuex
 Vue.use(Vuex)
 let storageKey = "userInfo";
@@ -17,7 +17,7 @@ const mutations = {
         state.userInfo = userInfo
     }
 }
-//配置state   muations 到store
+//配置state   mutations 到store
 export default new Vuex.Store({
     state, mutations
 })

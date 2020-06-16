@@ -24,7 +24,7 @@
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import {UPDATE_USER_INFO} from "../../vuex/mutationsType"
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -66,7 +66,8 @@ methods: {
                 //a.将用户信息保存到本地 localStorage
                 //b.将用户信息使用vuex存起来 方便实现页面组件的数据共享
                 //c.跳转到首页
-                // this.$store.commit(UPDATE_USER_INFO,res.wdata)
+                console.log(UPDATE_USER_INFO)
+                this.$store.commit(UPDATE_USER_INFO,res.wdata)
                 this.$router.push({"name":"index"})
             }
         })

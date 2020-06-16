@@ -11,6 +11,7 @@
         <div class="content-middle">
 
             <Post></Post>
+            <newList></newList>
         </div>
         <div class="content-right">
             <div class="searchInput">
@@ -31,6 +32,7 @@ import Nav from "../components/nav/Nav"
 import Post from "../components/post/Post"
 import searchInput from "../components/searchInput/SearchInput"
 import Login from "../components/login/login"
+import newList from "../components/newList/NewList"
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {
@@ -38,7 +40,8 @@ components: {
     Nav,
     Post,
     searchInput,
-    Login
+    Login,
+    newList
 },
 data() {
 //这里存放数据
