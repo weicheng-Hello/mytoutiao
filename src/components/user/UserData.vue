@@ -13,22 +13,23 @@
         <div class="nameCont" v-if="navTab == 'msg'">
         <div class="name">
             <div class="nameDiv">名称</div>
-            <input type="text" >
+            <input type="text" v-model="updataName">
         </div>
         <div class="nameImg">
             <div class="poto">头像</div>
-            <img src="" alt="">
+            <img :src="nameImg" alt="">
+            <input type="file" multiple="multiple" accept="image/*" @change="changePictuer">
         </div>
         </div>
     </div>
-        <div class="updata">更新资料</div>
+        <div class="updata" @click.stop="updataClick">更新资料</div>
 </div>
 </template>
 
 <script>
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
-
+import  { UPDATE_USER_INFO } from "../../vuex/mutationsType"
 export default {
 //import引入的组件需要注入到对象中才能使用
 components: {},
@@ -39,11 +40,15 @@ return {
         {id:"msg",title:"账号信息"},
         {id:"pwd",title:"密码管理"}
     ],
-    navTab:"msg"
+    navTab:"msg",
+    updataName:this.$store.state.userInfo.nickname,//用户名
+    nameImg:this.$store.state.userInfo.avator
 };
 },
 //监听属性 类似于data概念
-computed: {},
+computed: {
+  
+},
 //监控data中的数据变化
 watch: {},
 //方法集合
@@ -51,6 +56,34 @@ methods: {
     navTabClick:function(id){
         this.navTab = id
         console.log(id)
+    },
+    updataClick:function(){
+      if(!this.updataName){
+        this.$message({
+          msg:"输入昵称不能为空"
+        })
+        return false
+      }
+      this.$axios.post("/updateUserInfo",{
+        nickname:this.updataName,
+        avator:this.nameImg
+      }).then(res => {
+        this.$message({
+          msg:res.msg
+        })
+      })
+    },
+    changePictuer:function(e){
+      console.log(e)
+        Array.from(e.target.files).forEach(f => {
+            console.log(f)
+            let params = new FormData();
+            params.append("file",f)
+            this.$axios.post("/aliossUpload",params).then(res => {
+                // console.log(res.data.url)
+                this.nameImg=res.url
+            })
+        })
     }
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -59,7 +92,7 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    
+   
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
@@ -72,8 +105,9 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 </script>
 <style lang="less" scoped>
     .userData {
-  .userData-header {
-      width:100vw;
+      width: 100%;
+      .userData-header {
+      width:100%;
       height: 50px;
         line-height: 50px;
         color: var(--themeColor);
@@ -85,7 +119,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     }
   }
     .cont{
-    width: 1200px;
+    width: 100%;
       margin: 0 auto;
       margin-bottom: 10px;
   .content {
@@ -93,7 +127,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
       border-bottom: 1px solid #ddd;
       margin-bottom: 10px;
     .content-title {
-        margin-left: 20px;
+        margin-left: 10%;
         height: 40px;
       line-height: 40px;
     }
@@ -123,6 +157,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
         padding-right: 10px;
         border-radius: 5px;
         border: 1px solid #ddd;
+        
     }
   }
 
@@ -130,7 +165,8 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     //   height: 40px;
       display: flex;
       margin-bottom:10px ;
-      padding-left: 27px;
+      padding-left: 2%;
+      position: relative;
       .poto{
           color: #ddd;
           margin-right: 10px;
@@ -138,9 +174,16 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     img {
         width: 200px;
         height: 200px;
-        border: 1px solid black;
-        
+        border: 1px dashed #ddd;
     }
+    input{
+      position: absolute;
+      left: 6%;
+      width: 200px;
+      height: 200px;
+      opacity: 0;
+    }
+        
   }
   }
 
@@ -148,7 +191,7 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
     }
     .updata {
       
-      margin-left: 230px;
+      margin-left: 100px;
       width: 100px;
       height: 40px;
       line-height: 40px;
