@@ -1,0 +1,161 @@
+<!--  -->
+<template>
+<div class='userData'>
+    <div class="userData-header">
+        <h2>头条号</h2>
+    </div>
+    <div class="cont" >
+        <div class="content">
+            <div :class="['content-title',{active:item.id == navTab}]" v-for="(item,index) in navs" 
+            @click.stop="navTabClick(item.id)"
+            :key="index">{{item.title}}</div>
+        </div>
+        <div class="nameCont" v-if="navTab == 'msg'">
+        <div class="name">
+            <div class="nameDiv">名称</div>
+            <input type="text" >
+        </div>
+        <div class="nameImg">
+            <div class="poto">头像</div>
+            <img src="" alt="">
+        </div>
+        </div>
+    </div>
+        <div class="updata">更新资料</div>
+</div>
+</template>
+
+<script>
+//这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
+//例如：import 《组件名称》 from '《组件路径》';
+
+export default {
+//import引入的组件需要注入到对象中才能使用
+components: {},
+data() {
+//这里存放数据
+return {
+    navs:[
+        {id:"msg",title:"账号信息"},
+        {id:"pwd",title:"密码管理"}
+    ],
+    navTab:"msg"
+};
+},
+//监听属性 类似于data概念
+computed: {},
+//监控data中的数据变化
+watch: {},
+//方法集合
+methods: {
+    navTabClick:function(id){
+        this.navTab = id
+        console.log(id)
+    }
+},
+//生命周期 - 创建完成（可以访问当前this实例）
+created() {
+
+},
+//生命周期 - 挂载完成（可以访问DOM元素）
+mounted() {
+    
+},
+beforeCreate() {}, //生命周期 - 创建之前
+beforeMount() {}, //生命周期 - 挂载之前
+beforeUpdate() {}, //生命周期 - 更新之前
+updated() {}, //生命周期 - 更新之后
+beforeDestroy() {}, //生命周期 - 销毁之前
+destroyed() {}, //生命周期 - 销毁完成
+activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+}
+</script>
+<style lang="less" scoped>
+    .userData {
+  .userData-header {
+      width:100vw;
+      height: 50px;
+        line-height: 50px;
+        color: var(--themeColor);
+        padding-left: 10%;
+        margin-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+    h2 {
+        
+    }
+  }
+    .cont{
+    width: 1200px;
+      margin: 0 auto;
+      margin-bottom: 10px;
+  .content {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 10px;
+    .content-title {
+        margin-left: 20px;
+        height: 40px;
+      line-height: 40px;
+    }
+    .active{
+        color:#409EFF;
+        border-bottom: 2px solid var(--themeColor);
+    }
+  }
+.nameCont{
+  .name {
+    //   padding-left:30px;
+      height: 40px;
+      display: flex;
+      margin-bottom:10px ;
+    .nameDiv{
+        flex: 0.5;
+        color: #ddd;
+        height: 40px;
+        line-height: 40px;
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    input {
+        flex: 9.5;
+        width: 100%;
+        padding-right: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+    }
+  }
+
+  .nameImg {
+    //   height: 40px;
+      display: flex;
+      margin-bottom:10px ;
+      padding-left: 27px;
+      .poto{
+          color: #ddd;
+          margin-right: 10px;
+      }
+    img {
+        width: 200px;
+        height: 200px;
+        border: 1px solid black;
+        
+    }
+  }
+  }
+
+  
+    }
+    .updata {
+      
+      margin-left: 230px;
+      width: 100px;
+      height: 40px;
+      line-height: 40px;
+      background-color: #409EFF;
+      text-align: center;
+      color: white;
+      border-radius: 5px;
+  }
+}
+</style>

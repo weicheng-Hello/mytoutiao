@@ -5,6 +5,7 @@ import Index from "../components/Index"
 import userLogin from "../components/login/userLogin"
 import Register from "../components/login/Register"
 import User from "../components/user/User"
+import UserData from "../components/user/UserData"
 let routes = [{
     path:"/",
     name:"index",
@@ -21,6 +22,10 @@ let routes = [{
     path:"/User",
     name:"user",
     component:User
+},{
+    path:"/UserData",
+    name:"userData",
+    component:UserData
 }]
 export default new VueRouter({
     routes
