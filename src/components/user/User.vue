@@ -19,30 +19,36 @@
             @click="clickTab(tit.id)"
             >{{tit.title}}</div>
         </div>
-        <div class="content" v-if="titleTab=='toutiao'">
+        <div class="content" 
+            v-show="titleTab == 'toutiao'"  
+            v-for="(toutiao,index) in toutiaos" :key="index">
+            <div class="left">
+                <img :src="imgs" alt="" v-show="toutiao.imgs != null">
+            </div>
             <div class="message">
                 <img :src="userInfo.avator" alt="">
                 <span>{{userInfo.nickname}}</span>
+                <div class="title">{{toutiao.content}}</div>
+                <div class="data">{{toutiao.created_at}}</div>
+            <div class="del" @click.stop="delMessage(toutiao.nid)">删除</div>
             </div>
-            <div class="title"></div>
-            <div class="content-title"></div>
-            <div class="data"></div>
-            <div class="del">删除</div>
         </div>
-        <div class="content" v-else>
-            <div class="message" v-for="(news,index) in articles" :key="index">
+        <div class="content" 
+            v-show="titleTab == 'wenzhang'"  
+            v-for="(item,index) in articles" :key="index">
+            <div class="left">
+                <img :src="imgs" alt="" >
+            </div>
+            <div class="message">
                 <img :src="userInfo.avator" alt="">
                 <span>{{userInfo.nickname}}</span>
-            
-            <div class="title">{{news.title}}</div>
-            <!-- <img :src="userInfo.avator" alt=""> -->
-            <div class="content-title">{{news.title}}</div>
-            <div class="data">{{news.created_at}}</div>
-            <div class="del">文章</div>
+                <div class="title">{{item.title}}</div>
+                <div class="data">{{item.created_at}}</div>
+            <div class="del" @click.stop="delMessage(item.nid)">删除</div>
+            </div>
         </div>
-        </div>
-        
     </div>
+        
 </div>
 </template>
 
@@ -63,6 +69,8 @@ return {
     titleTab:"toutiao",
     toutiaos:[],//头条数据
     articles:[],//文章数据
+    imgs:"",//用户发表的图片
+    
 };
 },
 //监听属性 类似于data概念
@@ -82,7 +90,33 @@ methods: {
         this.$router.push({
             path:"/UserData"
         })
-    }
+    },
+    //删除头条
+    delMessage:function(nid){
+        this.$axios.post("/deleteArticle",{
+            nid: nid
+        }).then(res => {
+            this.$message({
+                msg:res.msg
+            })
+            //res.status == 0 代表删除成功
+            if(res.status == 0){
+                let index = this.toutiaos.findIndex(v => v.nid==nid)
+                if(index !=-1){
+                    this.toutiaos.splice(index,1)
+                    return true
+                }
+                index = this.articles.findIndex(v => v.nid==nid)
+                if(index !=-1){
+                    this.articles.splice(index,1)
+                    return true
+                }
+            }
+        })
+    },
+    // delWz:function(){
+
+    // }
         
 },
 //生命周期 - 创建完成（可以访问当前this实例）
@@ -93,17 +127,35 @@ created() {
 mounted() {
     //获取微头条数据
     this.$axios.post("/getArticlesByType",{
-        type:"TT"
+        type:"TT",
+        
     }).then(res => {
-        console.log(res)
+        // console.log(res)
         this.toutiaos = res.articles
-    }),
+        // console.log(res.articles)
+        if(this.toutiaos != []){
+        this.toutiaos.forEach(e => {
+            // console.log(e.imgs)
+            // console.log()
+            
+                // let img = []
+                // img.push(e.imgs)
+                // console.log(img)
+                if(e.imgs != null){
+                this.imgs = e.imgs.split(",")[0]}
+            
+        })
+         }   // console.log(this.imgs)
+        }),
+        // console.log(this.imgs)
+        
+    
     //获取文章数据
     this.$axios.post("/getArticlesByType",{
         type:"article"
     }).then(res => {
-        console.log(res)
         this.articles = res.articles
+        // console.log(this.articles[0].content)
     })
 },
 beforeCreate() {}, //生命周期 - 创建之前
@@ -182,37 +234,61 @@ activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
   }
   
 }
-  .content {
-    .message {
+.content {
+    // display: flex;
+    padding: 10px;
+    position: relative;
+    border-bottom: 1px solid #ddd;
+  .left {
+    img {
+        width: 140px;
+        height: 100px;
+        border: 1px dashed #ddd;
+    }
+  }
+
+  .message {
+      padding-left: 10px;
+      
+    img {
+        margin-top: 10px;
+        width:30px;
+        height: 30px;
         border-radius: 50%;
-      img {
-          width: 30px;
-          height: 30px;
-          border-radius: 50%;
-      }
-
-      span {
-
-      }
     }
 
+    span {
+
+    }
     .title {
-
-    }
-
-    .content-title {
-
+        margin-top: 5px;
     }
 
     .data {
-
+        margin-top: 5px;
     }
+    
   }
-  
+
 
   .del {
-
+      
+      position: absolute;
+      right: 5%;
+      bottom: 20px;
+      display: none;
   }
+
+}
+.content:hover .del{
+          display: block;
+          color: red;
+      }
+      
+  
+  
+
+  
 }
 }
 </style>
