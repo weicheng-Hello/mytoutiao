@@ -35,7 +35,8 @@ return {
     lastid:0, 
     newsList:[],//文章列表
     page:0,//当前请求的页码
-    number:20//请求的条数
+    number:20,//请求的条数
+    flag:false
 };
 },
 //监听属性 类似于data概念
@@ -49,29 +50,38 @@ methods: {
         this.$axios.post("/getArticles",{
             lastid:this.lastid
         }).then(res => {
-            //将最新的数据拼接在现有的数据上面
-            console.log(res.articles)
-            // this.newsList = ((this.newsList).concat(res.articles || []))
-            // if(this.newsList.length > 0){
-            //     //获取最后一条文章或头条的  id
-            //     this.lastid = this.newsList[0].nid
-            // }
+            // 将最新的数据拼接在现有的数据上面
+            this.newsList = ((res.articles || []).concat(this.newsList))
+            // console.log(this.newsList)
+            if(this.newsList.length > 0){
+                //获取最后一条文章或头条的  id
+                this.lastid = this.newsList[0].nid
+            }
         })
     },
+    //获取新闻列表
     refresh:function(){
+        if(this.flag){
+            return false
+        }
+        this.flag =true
         this.$axios.post("/getArticles",{
             lastid:this.lastid,
-            page:++this.page,
-            number:this.number
+            page:this.page++,//0
+            number:this.number//20
         }).then(res => {
-            
-            console.log(res.articles)
-            this.newsList = (this.newsList).concat(res.articles || [])
+            this.newsList = ((this.newsList).concat(res.articles || []))
+            //获取当前页面的值
+            this.page = res.current_page || this.page
+            // this.newsList = (res.articles || []).concat(this.newsList)
+            console.log(this.newsList)//60
             if(res.counts/this.number <= res.current_page){
                 this.$message({
                     msg:"已经到最后一页了"
                 })
             }
+        }).catch(err => {console.log(err)}).finally(()=>{
+            this.flag =false
         })
     }
 
@@ -93,17 +103,23 @@ mounted() {
         //3.获取可视区域的高度
         let clientHeight = htmlElement.clientHeight
         //scrollHeight-scrollTop <=clientHeight
+        // console.log(scrollHeight)
+        // console.log(scrollTop)
+        // console.log(clientHeight)
         console.log(scrollHeight-scrollTop <=clientHeight ? "触底了":"继续")
         scrollHeight-scrollTop <=clientHeight ? _this.refresh():""
     })
     this.refresh()
+    
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
 beforeUpdate() {}, //生命周期 - 更新之前
 updated() {}, //生命周期 - 更新之后
 beforeDestroy() {}, //生命周期 - 销毁之前
-destroyed() {}, //生命周期 - 销毁完成
+destroyed() {
+    // this.page = 0
+}, //生命周期 - 销毁完成
 activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
 }
 </script>
