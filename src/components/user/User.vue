@@ -43,6 +43,7 @@
                 <img :src="userInfo.avator" alt="">
                 <span>{{userInfo.nickname}}</span>
                 <div class="title">{{item.title}}</div>
+                <div v-html="item.content"></div>
                 <div class="data">{{item.created_at}}</div>
             <div class="del" @click.stop="delMessage(item.nid)">删除</div>
             </div>
