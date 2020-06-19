@@ -32,8 +32,10 @@ components: {},
 data() {
 //这里存放数据
 return {
-    lastid:0,
-    newsList:[],
+    lastid:0, 
+    newsList:[],//文章列表
+    page:0,//当前请求的页码
+    number:20//请求的条数
 };
 },
 //监听属性 类似于data概念
@@ -43,17 +45,36 @@ watch: {},
 //方法集合
 methods: {
     clickRefresh:function(){
+        
         this.$axios.post("/getArticles",{
             lastid:this.lastid
         }).then(res => {
             //将最新的数据拼接在现有的数据上面
-            this.newsList = (res.articles || [].concat(this.newsList))
-            if(this.newsList.length > 0){
-                //获取最后一条文章或头条的  id
-                this.lastid = this.newsList[0].nid
+            console.log(res.articles)
+            // this.newsList = ((this.newsList).concat(res.articles || []))
+            // if(this.newsList.length > 0){
+            //     //获取最后一条文章或头条的  id
+            //     this.lastid = this.newsList[0].nid
+            // }
+        })
+    },
+    refresh:function(){
+        this.$axios.post("/getArticles",{
+            lastid:this.lastid,
+            page:++this.page,
+            number:this.number
+        }).then(res => {
+            
+            console.log(res.articles)
+            this.newsList = (this.newsList).concat(res.articles || [])
+            if(res.counts/this.number <= res.current_page){
+                this.$message({
+                    msg:"已经到最后一页了"
+                })
             }
         })
     }
+
 },
 //生命周期 - 创建完成（可以访问当前this实例）
 created() {
@@ -61,16 +82,21 @@ created() {
 },
 //生命周期 - 挂载完成（可以访问DOM元素）
 mounted() {
-    this.$axios.post("/getArticles",{
-        lastid:this.lastid
-    }).then(res => {
-        console.log(res)
-        this.newsList = res.articles || []
+    let _this = this
+    //添加页面的滚动事件
+    window.addEventListener("scroll",() =>{
+        //1.获取整个屏幕可以滚动的高度
+        let htmlElement = document.documentElement
+        let scrollHeight = htmlElement.scrollHeight
+        //2.获取当前滚动的高度
+        let scrollTop =htmlElement.scrollTop
+        //3.获取可视区域的高度
+        let clientHeight = htmlElement.clientHeight
+        //scrollHeight-scrollTop <=clientHeight
+        console.log(scrollHeight-scrollTop <=clientHeight ? "触底了":"继续")
+        scrollHeight-scrollTop <=clientHeight ? _this.refresh():""
     })
-    if(this.newsList.length > 0){
-        //获取最后一条文章或头条的id
-        this.lastid = this.newsList[0].nid
-    }
+    this.refresh()
 },
 beforeCreate() {}, //生命周期 - 创建之前
 beforeMount() {}, //生命周期 - 挂载之前
