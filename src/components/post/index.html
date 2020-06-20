@@ -16,6 +16,22 @@
         }
         // fun()
         console.log(a)
+        console.log(typeof null)
+        let obj = {
+            name:"xiao",
+            age:18
+        }
+        for(let key in obj){
+            console.log(obj[key])
+        }
+        function init (){
+            let a =22
+            function p (){
+                console.log(a)
+            }
+            return p()
+        }
+        init()
     </script>
 </body>
 </html>

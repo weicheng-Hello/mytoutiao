@@ -67,13 +67,14 @@ methods: {
         this.flag =true
         this.$axios.post("/getArticles",{
             lastid:this.lastid,
-            page:this.page++,//0
+            page:this.page,//0
             number:this.number//20
         }).then(res => {
             this.newsList = ((this.newsList).concat(res.articles || []))
             //获取当前页面的值
-            this.page = res.current_page || this.page
+            this.page += 1
             // this.newsList = (res.articles || []).concat(this.newsList)
+            console.log(res.current_page)
             console.log(this.newsList)//60
             if(res.counts/this.number <= res.current_page){
                 this.$message({
